@@ -1,0 +1,22 @@
+{
+  "name": "dobot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DoBotUz/telegram-bot.git"
+  },
+  "author": "DoBot.uz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DoBotUz/telegram-bot/issues"
+  },
+  "homepage": "https://github.com/DoBotUz/telegram-bot#readme",
+  "dependencies": {
+    "telegraf": "^3.38.0"
+  }
+}
