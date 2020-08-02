@@ -58,7 +58,7 @@ function configure(bot) {
   bot.hears('⚙️ Настройки', ctx => {
     ctx.scene.enter('settings');
   });
-  bot.hears('ℹ️ Инфо', global.routes.info);
+  //bot.hears('ℹ️ Инфо', global.routes.info);
 
   bot.on('text', ctx => ctx.reply(ctx.i18n.t('tap-on-buttons')));
 

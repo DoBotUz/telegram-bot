@@ -5,5 +5,5 @@ const languages = {
 }
 
 module.exports = {
-  languges,
+  languages,
 }
