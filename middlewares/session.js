@@ -16,7 +16,9 @@ class MySQLSession {
   }
 
   getSession(bot_id, key) {
-    if (this.sessions[key]) return { then: function (fn) { fn(this.sessions[key]) } }
+    let that = this;
+    if (this.sessions[key]) 
+      return { then: function (fn) { fn(that.sessions[key]) } }
     return dbService('sessions').where({ id: key, bot_id: bot_id }).first()
       .then(json => {
         let session = {}
@@ -53,16 +55,17 @@ class MySQLSession {
     return (ctx, next) => {
       const key = this.options.getSessionKey(ctx)
       const bot_id = ctx.meta.id;
+      const that = this;
       if (!key) {
         return next()
       }
       return this.getSession(bot_id, key).then(() => {
         Object.defineProperty(ctx, this.options.property, {
-          get: function () { return this.sessions[key] },
-          set: function (newValue) { this.sessions[key] = Object.assign({}, newValue) }
+          get: function () { return that.sessions[key] },
+          set: function (newValue) { that.sessions[key] = Object.assign({}, newValue) }
         })
         return next().then(() => {
-          return this.saveSession(bot_id, key, this.sessions[key])
+          return this.saveSession(bot_id, key, that.sessions[key])
         })
       })
     }
