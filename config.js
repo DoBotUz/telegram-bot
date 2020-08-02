@@ -5,7 +5,7 @@ const production = {
     "host": "localhost",
     "user": "root",
     "password": "dobot@2020",
-    "database": "bot",
+    "database": "dobot",
     "charset" : "utf8mb4"
   },
   "webhook": {
@@ -21,7 +21,7 @@ const development = {
     "host": "localhost",
     "user": "root",
     "password": "dobot@2020",
-    "database": "bot",
+    "database": "dobot",
     "charset" : "utf8mb4"
   },
   "webhook": {
