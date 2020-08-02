@@ -17,6 +17,15 @@
   },
   "homepage": "https://github.com/DoBotUz/telegram-bot#readme",
   "dependencies": {
-    "telegraf": "^3.38.0"
+    "axios": "^0.19.2",
+    "knex": "^0.21.2",
+    "koa": "^2.13.0",
+    "koa-body": "^4.2.0",
+    "lodash": "^4.17.19",
+    "moment": "^2.27.0",
+    "mysql": "^2.18.1",
+    "socket.io-client": "^2.3.0",
+    "telegraf": "^3.38.0",
+    "telegraf-i18n": "^6.6.0"
   }
 }
