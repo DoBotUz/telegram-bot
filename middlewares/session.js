@@ -1,7 +1,5 @@
 const dbService = require('../services/db');
 
-var sessions = {}
-
 class MySQLSession {
   constructor(options) {
     this.options = Object.assign({
@@ -13,11 +11,12 @@ class MySQLSession {
         return `${ctx.chat.id}:${ctx.from.id}`
       },
       store: {}
-    }, options)
+    }, options);
+    this.sessions = {};
   }
 
   getSession(bot_id, key) {
-    if (sessions[key]) return { then: function (fn) { fn(sessions[key]) } }
+    if (this.sessions[key]) return { then: function (fn) { fn(this.sessions[key]) } }
     return dbService('sessions').where({ id: key, bot_id: bot_id }).first()
       .then(json => {
         let session = {}
@@ -28,7 +27,7 @@ class MySQLSession {
             console.error('Parse session state failed', error)
           }
         }
-        sessions[key] = session
+        this.sessions[key] = session
         return session
       })
       .catch(err => {
@@ -59,11 +58,11 @@ class MySQLSession {
       }
       return this.getSession(bot_id, key).then(() => {
         Object.defineProperty(ctx, this.options.property, {
-          get: function () { return sessions[key] },
-          set: function (newValue) { sessions[key] = Object.assign({}, newValue) }
+          get: function () { return this.sessions[key] },
+          set: function (newValue) { this.sessions[key] = Object.assign({}, newValue) }
         })
         return next().then(() => {
-          return this.saveSession(bot_id, key, sessions[key])
+          return this.saveSession(bot_id, key, this.sessions[key])
         })
       })
     }
