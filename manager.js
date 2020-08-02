@@ -25,7 +25,7 @@ function attachBot(meta) { // meta = bot
   bot.telegram.setWebhook(webhook.url + webhook.path + meta.token);
 }
 
-db('bot').where({
+dbService('bot').where({
   status: 10
 }).then(bots => {
   bots.forEach(bot => {
