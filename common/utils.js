@@ -20,9 +20,14 @@ function strikeThrough(text) {
     .join('')
 }
 
+function findKeyByValue(object, value) {
+  return Object.keys(object).find(key => obj[key] === value);
+}
+
 module.exports = {
   rangeKeyboard,
   isCartEmpty,
   formatMoney,
   strikeThrough,
+  findKeyByValue,
 }
