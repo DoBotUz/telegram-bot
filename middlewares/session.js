@@ -18,9 +18,7 @@ class MySQLSession {
 
   getSession(bot_id, key) {
     if (sessions[key]) return { then: function (fn) { fn(sessions[key]) } }
-    return dbService('sessions')
-      .where({ id: key, bot_id })
-      .first()
+    return dbService('sessions').where({ id: key, bot_id: bot_id }).first()
       .then(json => {
         let session = {}
         if (json) {
@@ -40,9 +38,7 @@ class MySQLSession {
 
   saveSession(bot_id, key, session) {
     if (!session || Object.keys(session).length === 0) {
-      return dbService
-        .where({ id: key, bot_id })
-        .delete();
+      return dbService('sessions').where({ id: key, bot_id }).delete();
     }
 
     const sessionString = escape(JSON.stringify(session))
