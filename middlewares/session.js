@@ -32,7 +32,10 @@ class MySQLSession {
         }
         sessions[key] = session
         return session
-      });
+      })
+      .catch(err => {
+        console.error(err);
+      })
   }
 
   saveSession(bot_id, key, session) {
@@ -46,7 +49,9 @@ class MySQLSession {
     return dbService.raw(
       `INSERT INTO sessions(bot_id, id, session) value("${bot_id}", "${key}", "${sessionString}")
         on duplicate key update session="${sessionString}";`
-    )
+    ).catch(err => {
+      console.error(err);
+    })
   }
 
   middleware() {
