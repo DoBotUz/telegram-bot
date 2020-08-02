@@ -1,5 +1,4 @@
 const dbService = require('../services/db');
-const db = require('../services/db');
 
 var sessions = {}
 
@@ -38,7 +37,6 @@ class MySQLSession {
 
   saveSession(bot_id, key, session) {
     if (!session || Object.keys(session).length === 0) {
-      debug('clear session')
       return dbService
         .where({ id: key, bot_id })
         .delete();
