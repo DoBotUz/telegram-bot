@@ -2,16 +2,12 @@ const Markup = require('telegraf/markup');
 const WizardScene = require('telegraf/scenes/wizard');
 const Composer = require('telegraf/composer');
 const { match } = require('telegraf-i18n');
-const dbService = require('../services/db');
 const _ = require('lodash');
+const dbService = require('../services/db');
+const { createOrder } = require('../services/db/checkout');
 
 const payment_types = {
 	'💵 Наличные': 'CASH'
-}
-
-function createOrder() {
-  // stub
-  return Promise.resolve(1);
 }
 
 async function buildCheque(ctx) {
@@ -103,12 +99,12 @@ module.exports = new WizardScene(
 		})
 		.hears('✅ Заказать', async ctx => {
 			let orderId = await createOrder({
-				chat_id: ctx.from.id,
-				client: ctx.user.id,
+				client: ctx.user,
 				...ctx.scene.state,
 				cart: ctx.session.cart,
-				delivery_price: 5000
+				delivery_charge: 5000
 			});
+			
 			ctx.replyWithMarkdown(
 				`Заказ принят. Номер заказа #${orderId}. Ожидайте звонка оператора`
 			);
