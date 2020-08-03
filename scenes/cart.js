@@ -21,7 +21,7 @@ async function buildCheque(ctx) {
     text: '📥 Корзина:\n\n' + text + `\n\n*Итого:* ${total} сум`,
     keyboard: [
       '🔄 Очистить',
-      ...products.map(prod => `❌ ${prod.name}`),
+      ...products.map(prod => `❌ ${prod.ru_title}`),
       ctx.i18n.t('back')
     ]
   }
