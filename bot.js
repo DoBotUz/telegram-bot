@@ -30,7 +30,7 @@ function configure(bot) {
   bot.use(i18n.middleware());
   bot.use(webhookPing);
   bot.command(['start', 'stop', 'restart'], async (ctx, next) => {
-    if (!user) {
+    if (!ctx.user) {
       return next(ctx);
     }
     ctx.session.__scenes = {};
