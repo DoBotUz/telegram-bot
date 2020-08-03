@@ -2,5 +2,6 @@ module.exports = [
   require('./settings'),
   require('./register'),
   require('./menu'),
-  require('./cart')
+  require('./cart'),
+  require('./checkout'),
 ];

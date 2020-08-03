@@ -7,7 +7,7 @@ const { isCartEmpty } = require('../common/utils');
 const _ = require('lodash');
 
 async function buildCheque(ctx) {
-  const products = await dbService('items')
+  const products = await dbService('item')
     .whereIn('id', Object.keys(ctx.session.cart).filter(id => ctx.session.cart[id]));
   const text = products.map(product => (
     `*${product.ru_title}*\n` +
@@ -54,7 +54,7 @@ module.exports = new WizardScene(
     })
     .hears(/^❌ .+/, async ctx => {
       let name = ctx.message.text.replace('❌ ', '');
-      let product = await dbService('items').where({ ru_title: name }).first();
+      let product = await dbService('item').where({ ru_title: name }).first();
       delete ctx.session.cart[product.id];
       if (isCartEmpty(ctx.session.cart)) {
         await ctx.replyWithMarkdown('Корзина пуста');

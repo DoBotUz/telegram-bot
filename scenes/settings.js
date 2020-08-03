@@ -11,7 +11,7 @@ module.exports = new WizardScene(
     ctx.replyWithMarkdown(
       ctx.i18n.t('settings-info', {
         name: ctx.user.bio,
-        phone: ctx.user.phone,
+        phone: ctx.user.phone_number,
         lang: languages[ctx.i18n.locale()]
       }),
       Markup.keyboard([

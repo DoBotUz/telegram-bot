@@ -10,7 +10,7 @@ const config = require('../config.js');
 const fs = require('fs');
 
 function buildProductDescription(product) {
-  return `${product.name}\n\n${product.description}\n\nЦена: ${formatMoney(product.price)} сум`
+  return `${product.ru_title}\n\n${product.ru_description}\n\nЦена: ${formatMoney(product.price)} сум`
 }
 
 module.exports = new WizardScene(
@@ -52,9 +52,9 @@ module.exports = new WizardScene(
           .first()
           .then(product => {
             ctx.scene.state.product = product;
-            if (product.photo) {
+            if (product.thumbnail) {
               ctx.replyWithPhoto({
-                source: fs.readFileSync(config.mediaPath + '/items/' + product.photo)
+                source: fs.readFileSync(config.mediaPath + '/items/' + product.thumbnail)
               }, Extra
                   .caption(buildProductDescription(product))
                   .markdown()
@@ -177,7 +177,7 @@ function BasicComposer(composer) {
       if (isCartEmpty(ctx.session.cart)) {
         return ctx.replyWithMarkdown('Корзина пуста');
       }
-      ctx.scene.enter('order', {
+      ctx.scene.enter('checkout', {
         origin: 'menu'
       });
     });
