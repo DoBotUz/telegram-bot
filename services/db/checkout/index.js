@@ -1,5 +1,6 @@
 const { getProductsInCart } = require("../menu");
 const dbService = require('..');
+const { db } = require("../../../config");
 
 const ORDER_STATUSES = {
   ACTIVE: 10,
@@ -19,6 +20,9 @@ async function createOrder({ client, cart, location, address, payment_type, deli
   const total_charge = products.reduce((p, c) => {
       return p + cart[c.id]*c.price;
   }, 0);
+  const { organization_id } = await dbService('bot').where({
+    id: client.bot_id
+  }).first()
   return dbService('order')
     .insert({
       address,
@@ -30,6 +34,7 @@ async function createOrder({ client, cart, location, address, payment_type, deli
       bot_user_id: client.id,
       phone: client.phone_number,
       status: ORDER_STATUSES.MODERATION,
+      organization_id,
     }).then(async (order) => {
       await dbService('order_item')
         .insert(products.map(prod => ({
