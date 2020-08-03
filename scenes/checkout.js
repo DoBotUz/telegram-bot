@@ -27,7 +27,7 @@ async function buildCheque(ctx) {
 
 	return {
 			text: '*Ваш заказ:*\n\n'
-				+ `*Телефон:* ${ctx.session.client.phone}\n`
+				+ `*Телефон:* ${ctx.user.phone_number}\n`
 				+ (ctx.scene.state.address ? `*Адрес:* ${ctx.scene.state.address}\n` : '')
 				+ '*Способ оплаты:* 💵 Наличные\n\n'
 				+ '📥 Корзина:\n\n'
