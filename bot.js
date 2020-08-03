@@ -52,9 +52,9 @@ function configure(bot) {
     next(ctx);
   });
 
-  // bot.hears('📙 Меню', ctx => {
-  //   ctx.scene.enter('menu')
-  // });
+  bot.hears('📙 Меню', ctx => {
+    ctx.scene.enter('menu')
+  });
   bot.hears('⚙️ Настройки', ctx => {
     ctx.scene.enter('settings');
   });
