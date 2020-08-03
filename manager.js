@@ -26,7 +26,13 @@ function attachBot(meta) { // meta = bot
     next();
   });
   configure(bot);
-  bot.telegram.setWebhook(webhook.url + webhook.path + meta.token);
+  bot.telegram.setWebhook(webhook.url + webhook.path + meta.token)
+    .then(res => {
+      console.log('setWebhook', meta.token, res)
+    })
+    .catch(err => {
+      console.error('webhook err', meta.token, err);
+    });
   DOBOTS[meta.token] = bot;
   DOBOT_TOKENS.push(meta.token);
 }
