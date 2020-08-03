@@ -4,4 +4,5 @@ module.exports = [
   require('./menu'),
   require('./cart'),
   require('./checkout'),
+  require('./feedback'),
 ];
