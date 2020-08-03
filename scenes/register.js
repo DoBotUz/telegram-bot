@@ -69,6 +69,7 @@ module.exports = new WizardScene(
         bio: ctx.session.client.name,
         language: ctx.i18n.locale()
       }).catch(err => console.log('signup', err))
+      ctx.session.client = null;
       await ctx.replyWithMarkdown(ctx.i18n.t('register_complete'));
       ctx.scene.leave();
       return global.routes.start(ctx);

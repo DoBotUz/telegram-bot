@@ -10,8 +10,8 @@ module.exports = new WizardScene(
   async ctx => {
     ctx.replyWithMarkdown(
       ctx.i18n.t('settings-info', {
-        name: ctx.session.client.name,
-        phone: ctx.session.client.phone,
+        name: ctx.user.bio,
+        phone: ctx.user.phone,
         lang: languages[ctx.i18n.locale()]
       }),
       Markup.keyboard([
@@ -66,13 +66,13 @@ module.exports = new WizardScene(
     })
     .on('contact', ctx => {
       if (ctx.scene.state.step === 'phone') {
-        ctx.session.client.phone = ctx.message.contact.phone_number.replace(/\+/g, '');
+        // ctx.session.client.phone = ctx.message.contact.phone_number.replace(/\+/g, '');
         ctx.scene.reenter();
       }
     })
     .hears(/^\+?(998)?( |\-)?\d{2}( |\-)?\d{3}( |\-)?\d{2}( |\-)?\d{2}/, ctx => {
       if (ctx.scene.state.step === 'phone') {
-        ctx.session.client.phone = ctx.message.text.replace(/\+| |\-/g, '');
+        // ctx.session.client.phone = ctx.message.text.replace(/\+| |\-/g, '');
         ctx.scene.reenter();
       }
     })
@@ -84,7 +84,7 @@ module.exports = new WizardScene(
     })
     .on('text', ctx => {
       if (ctx.scene.state.step === 'name') {
-        ctx.session.client.name = ctx.message.text;
+        // ctx.session.client.name = ctx.message.text;
         return ctx.scene.reenter()
       } else if (ctx.scene.state.step === 'phone') {
         return ctx.replyWithMarkdown(

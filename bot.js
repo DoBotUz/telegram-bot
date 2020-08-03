@@ -1,6 +1,7 @@
 require('./routes');
 const session = require('./middlewares/session');
-const { getUser } = require('./services/db/user');
+const webhookPing = require('./middlewares/webhookPing');
+const setUserInfo = require('./middlewares/setUserInfo');
 const
 	Telegraf = require('telegraf'),
 	I18n = require('telegraf-i18n'),
@@ -25,16 +26,10 @@ function configure(bot) {
       return;
     return next(ctx);
   });
+  bot.use(setUserInfo);
   bot.use(i18n.middleware());
-  bot.use((ctx, next) => {
-    ctx.reply('Загрузка...');
-    next();
-  });
+  bot.use(webhookPing);
   bot.command(['start', 'stop', 'restart'], async (ctx, next) => {
-    let user = await getUser({
-      bot_id: ctx.meta.id,
-      tg_id: ctx.from.id
-    });
     if (!user) {
       return next(ctx);
     }
@@ -43,10 +38,7 @@ function configure(bot) {
   });
   bot.use(stage.middleware());
   bot.use(async (ctx, next) => {
-    if (!await getUser({
-      bot_id: ctx.meta.id,
-      tg_id: ctx.from.id
-    })) {
+    if (!ctx.user) {
       return ctx.scene.enter('register');
     }
     next(ctx);
