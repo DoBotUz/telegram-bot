@@ -1,6 +1,6 @@
 const { getProductsInCart } = require("../menu");
 const dbService = require('..');
-const { db } = require("../../../config");
+const { getSampleBranch } = require("../branches");
 
 const ORDER_STATUSES = {
   ACTIVE: 10,
@@ -23,6 +23,10 @@ async function createOrder({ client, cart, location, address, payment_type, deli
   const { organization_id } = await dbService('bot').where({
     id: client.bot_id
   }).first()
+  const { id: branch_id } = await getSampleBranch(organization_id);
+  if (!branch_id) {
+    throw new Error('no branch');
+  }
   return dbService('order')
     .insert({
       address,
@@ -35,6 +39,7 @@ async function createOrder({ client, cart, location, address, payment_type, deli
       phone: client.phone_number,
       status: ORDER_STATUSES.MODERATION,
       organization_id,
+      branch_id,
     }).then(async (order) => {
       await dbService('order_item')
         .insert(products.map(prod => ({
