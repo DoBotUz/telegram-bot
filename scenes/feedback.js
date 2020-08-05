@@ -4,6 +4,8 @@ const Composer = require('telegraf/composer');
 const { match } = require('telegraf-i18n');
 const dbService = require('../services/db');
 const { findKeyByValue } = require('../common/utils');
+const { feedbackTypes } = require('../common/constants');
+
 
 const stars = {
   5: '⭐⭐⭐⭐⭐',
@@ -19,7 +21,7 @@ module.exports = new WizardScene(
     ctx.replyWithMarkdown(
       'Оцените нашу работу по 5-бальной шкале.',
       Markup.keyboard([
-        ...Object.values(stars),
+        ...Object.values(stars).reverse(),
         ctx.i18n.t('back')
       ], { columns: 1 }).resize().extra()
     );
@@ -45,11 +47,12 @@ module.exports = new WizardScene(
       ctx.scene.reenter();
     })
     .on(['text', 'photo', 'video', 'audio', 'voice'], async ctx => {
-      let comment = ctx.message.text ? ctx.message.text : await getUrl(ctx);
+      let comment = ctx.message.text ? ctx.message.text : ctx.message.caption;
       dbService('feedback').insert({
         type: feedbackTypes[getMessageType(ctx.message)],
         bot_user_id: ctx.user.id,
-        comment: comment
+        comment: comment,
+        file: await getUrl(ctx),
       }).then(res => {
         ctx.replyWithMarkdown('Спасибо за ваш отзыв!');
         ctx.scene.leave();
@@ -76,6 +79,8 @@ function getMessageType(message) {
 async function getUrl(ctx) {
   const message = ctx.message;
   switch (true) {
+    case Boolean(message.text):
+      return null;
     case Boolean(message.audio):
       return getAudioUrl(ctx, message.audio)
     case Boolean(message.photo):
