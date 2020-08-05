@@ -51,7 +51,7 @@ module.exports = new WizardScene(
       dbService('feedback').insert({
         type: feedbackTypes[getMessageType(ctx.message)],
         bot_user_id: ctx.user.id,
-        comment: comment,
+        comment: comment || '',
         file: await getUrl(ctx),
       }).then(res => {
         ctx.replyWithMarkdown('Спасибо за ваш отзыв!');
