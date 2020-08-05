@@ -47,7 +47,7 @@ module.exports = new WizardScene(
     .on(['text', 'photo', 'video', 'audio', 'voice'], async ctx => {
       let comment = ctx.message.text ? ctx.message.text : await getUrl(ctx);
       dbService('feedback').insert({
-        type: getMessageType(ctx.message),
+        type: feedbackTypes[getMessageType(ctx.message)],
         bot_user_id: ctx.user.id,
         comment: comment
       }).then(res => {
