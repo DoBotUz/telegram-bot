@@ -45,7 +45,7 @@ module.exports = new WizardScene(
       ctx.scene.reenter();
     })
     .on(['text', 'photo', 'video', 'audio', 'voice'], async ctx => {
-      let comment = ctx.mesasge.text ? ctx.message.text : await getUrl(ctx);
+      let comment = ctx.message.text ? ctx.message.text : await getUrl(ctx);
       dbService('feedback').insert({
         type: getMessageType(ctx.message),
         bot_user_id: ctx.user.id,
