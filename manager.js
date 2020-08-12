@@ -38,7 +38,7 @@ function attachBot(meta) { // meta = bot
 }
 
 dbService('bot').where({
-  status: 10
+  status: '10'
 }).then(bots => {
   bots.forEach(bot => {
     attachBot(bot);

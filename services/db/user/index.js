@@ -19,7 +19,7 @@ function signUp({
     username,
     bio,
     language,
-    status: 10
+    status: '10'
   }).then(res => res[0]);
 }
 

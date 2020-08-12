@@ -3,16 +3,16 @@ const dbService = require('..');
 const { getSampleBranch } = require("../branches");
 
 const ORDER_STATUSES = {
-  ACTIVE: 10,
-  MODERATION: 9,
-  CANCELED: 0,
-  PAID: 11,
-  DELIVERED: 12,
+  ACTIVE: '10',
+  MODERATION: '9',
+  CANCELED: '0',
+  PAID: '11',
+  DELIVERED: '12',
 };
 
 const PAYMENT_TYPES = {
-  CASH: 10,
-  CARD: 0,
+  CASH: '10',
+  CARD: '0',
 }
 
 async function createOrder({ client, cart, location, address, payment_type, delivery_charge }) {
