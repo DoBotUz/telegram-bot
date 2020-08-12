@@ -60,7 +60,7 @@ module.exports = new WizardScene(
         return next(ctx);
       }
       await signUp({
-        bot_id: ctx.meta.id,
+        botId: ctx.meta.id,
         tg_id: ctx.from.id,
         first_name: ctx.from.first_name,
         last_name: ctx.from.last_name,

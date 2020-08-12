@@ -19,8 +19,8 @@ module.exports = new WizardScene(
     ctx.scene.state.prev_category = [];
     ctx.scene.state.parent_category = null;
     dbService('category').where({
-      bot_id: ctx.meta.id,
-      parent_category_id: ctx.scene.state.parent_category
+      organizationId: ctx.meta.organizationId,
+      parentCategoryId: ctx.scene.state.parent_category
     }).then(categories => {
       sendMsgWithCategories(ctx, categories);
     });
@@ -34,8 +34,8 @@ module.exports = new WizardScene(
         return global.routes.start(ctx);
       }
       dbService('category').where({
-        bot_id: ctx.meta.id,
-        parent_category_id: parent_category
+        organizationId: ctx.meta.organizationId,
+        parentCategoryId: parent_category
       }).then(categories => {
         ctx.scene.state.parent_category = parent_category;
         sendMsgWithCategories(ctx, categories);
@@ -47,7 +47,7 @@ module.exports = new WizardScene(
         return dbService('item')
           .where({
             ru_title: ctx.message.text,
-            category_id: ctx.scene.state.parent_category
+            categoryId: ctx.scene.state.parent_category
           })
           .first()
           .then(product => {
@@ -78,7 +78,7 @@ module.exports = new WizardScene(
 
       dbService('category').where({
         ru_title: ctx.message.text,
-        parent_category_id: ctx.scene.state.parent_category
+        parentCategoryId: ctx.scene.state.parent_category
       })
         .first()
         .then(async res => {
@@ -87,12 +87,12 @@ module.exports = new WizardScene(
           ctx.scene.state.parent_category = res.id;
 
           const categories = await dbService('category').where({
-            parent_category_id: res.id
+            parentCategoryId: res.id
           });
           if (categories.length == 0) {
             ctx.scene.state.product = true;
             const products = await dbService('item').where({
-              category_id: res.id
+              categoryId: res.id
             });
             return sendMsgWithProducts(ctx, products);
           }
@@ -103,7 +103,7 @@ module.exports = new WizardScene(
     .hears(match('back'), ctx => {
       let parent_category = ctx.scene.state.parent_category;
       dbService('item').where({
-        category_id: parent_category
+        categoryId: parent_category
       }).then(products => {
         // ctx.scene.state.product = null;
         ctx.wizard.back();
@@ -127,7 +127,7 @@ module.exports = new WizardScene(
       );
       let parent_category = ctx.scene.state.parent_category;
       dbService('item').where({
-        category_id: parent_category
+        categoryId: parent_category
       }).then(products => {
         ctx.scene.state.product = null;
         ctx.wizard.back();

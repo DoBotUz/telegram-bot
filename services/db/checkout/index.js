@@ -20,11 +20,11 @@ async function createOrder({ client, cart, location, address, payment_type, deli
   const total_charge = products.reduce((p, c) => {
       return p + cart[c.id]*c.price;
   }, 0);
-  const { organization_id } = await dbService('bot').where({
-    id: client.bot_id
+  const { organizationId } = await dbService('bot').where({
+    id: client.botId
   }).first()
-  const { id: branch_id } = await getSampleBranch(organization_id);
-  if (!branch_id) {
+  const { id: branchId } = await getSampleBranch(organizationId);
+  if (!branchId) {
     throw new Error('no branch');
   }
   return dbService('order')
@@ -35,11 +35,11 @@ async function createOrder({ client, cart, location, address, payment_type, deli
       payment_type: PAYMENT_TYPES[payment_type],
       total_charge,
       delivery_charge,
-      bot_user_id: client.id,
+      botUserId: client.id,
       phone: client.phone_number,
       status: ORDER_STATUSES.MODERATION,
-      organization_id,
-      branch_id,
+      organizationId,
+      branchId,
     }).then(async (order) => {
       await dbService('order_item')
         .insert(products.map(prod => ({

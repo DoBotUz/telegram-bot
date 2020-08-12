@@ -1,7 +1,7 @@
 const knex = require("..");
 
 function signUp({
-  bot_id,
+  botId,
   tg_id,
   first_name,
   last_name,
@@ -11,7 +11,7 @@ function signUp({
   language
 }) {
   return knex('bot_user').insert({
-    bot_id,
+    botId,
     tg_id,
     first_name,
     last_name,
@@ -23,9 +23,10 @@ function signUp({
   }).then(res => res[0]);
 }
 
-function getUser({ bot_id, tg_id }) {
+function getUser({ botId, tg_id }) {
   return knex('bot_user')
-    .where({ bot_id, tg_id }).first();
+    .where({ botId, tg_id })
+    .first();
 }
 
 module.exports = {
