@@ -43,8 +43,8 @@ async function createOrder({ client, cart, location, address, payment_type, deli
     }).then(async (order) => {
       await dbService('order_item')
         .insert(products.map(prod => ({
-          order_id: order[0],
-          item_id: prod.id,
+          orderId: order[0],
+          itemId: prod.id,
           amount: cart[prod.id]
         })));
       return order[0];
