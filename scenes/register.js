@@ -67,7 +67,8 @@ module.exports = new WizardScene(
         phone_number: ctx.session.client.phone,
         username: ctx.from.username,
         bio: ctx.session.client.name,
-        language: ctx.i18n.locale()
+        language: ctx.i18n.locale(),
+        organizationId: ctx.meta.organizationId,
       }).catch(err => console.log('signup', err))
       ctx.session.client = null;
       await ctx.replyWithMarkdown(ctx.i18n.t('register_complete'));

@@ -40,7 +40,7 @@ async function createOrder({ client, cart, location, address, payment_type, deli
       status: ORDER_STATUSES.MODERATION,
       organizationId,
       branchId,
-      for_datetime: null,
+      for_datetime: new Date(),
     }).then(async (order) => {
       await dbService('order_item')
         .insert(products.map(prod => ({

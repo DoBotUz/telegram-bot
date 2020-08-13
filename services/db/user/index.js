@@ -8,7 +8,8 @@ function signUp({
   phone_number,
   username,
   bio,
-  language
+  language,
+  organizationId
 }) {
   return knex('bot_user').insert({
     botId,
@@ -19,7 +20,8 @@ function signUp({
     username,
     bio,
     language,
-    status: '10'
+    status: '10',
+    organizationId
   }).then(res => res[0]);
 }
 

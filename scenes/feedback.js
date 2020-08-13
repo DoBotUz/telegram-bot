@@ -52,6 +52,7 @@ module.exports = new WizardScene(
         type: feedbackTypes[getMessageType(ctx.message)],
         botUserId: ctx.user.id,
         botId: ctx.meta.id,
+        organizationId: ctx.meta.organizationId,
         comment: comment || '',
         file: await getUrl(ctx),
       }).then(res => {
