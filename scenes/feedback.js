@@ -55,6 +55,7 @@ module.exports = new WizardScene(
         organizationId: ctx.meta.organizationId,
         comment: comment || '',
         file: await getUrl(ctx),
+        rating: ctx.scene.state.rate
       }).then(res => {
         ctx.replyWithMarkdown('Спасибо за ваш отзыв!');
         ctx.scene.leave();
