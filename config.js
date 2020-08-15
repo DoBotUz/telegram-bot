@@ -1,5 +1,6 @@
 const production = {
   "api_url": "http://localhost:4000/",
+  "ws_url": "ws://localhost:4000",
   "mediaPath": "/home/ubuntu/dobot_backend/uploads/",
   "db": {
     "host": "localhost",
@@ -16,6 +17,7 @@ const production = {
 
 const development = {
   "api_url": "http://localhost:4000/",
+  "ws_url": "ws://localhost:4000",
   "mediaPath": "/home/ubuntu/dobot_backend/uploads/",
   "db": {
     "host": "localhost",
@@ -27,7 +29,7 @@ const development = {
   "webhook": {
     "url": "https://dobot.uz",
     "path": "/webhook/"
-  }
+  },
 }
 
 module.exports = process.env.NODE_ENV === 'production' ? production : development;

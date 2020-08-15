@@ -1,5 +1,6 @@
 const io = require('socket.io-client');
-const socket = io('http://localhost:4000');
+const config = require('../config');
+const socket = io(config.ws_url);
 socket.on('event', console.log);
 socket.on('disconnect', console.log);
 socket.on('error', err => console.log)
