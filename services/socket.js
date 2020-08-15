@@ -21,9 +21,9 @@ const TYPES = {
   WARNING: 2,
 };
 
-function sendNotification(bot_id, key, key_id, ) {
+function sendNotification(org_id, key, key_id, ) {
   socket.emit('newNotification', {
-    bot_id,
+    org_id,
     notification: {
       key_id,
       key
@@ -31,12 +31,12 @@ function sendNotification(bot_id, key, key_id, ) {
   })
 }
 
-function sendFeedbackNotification(bot_id, key_id) {
-  sendNotification(bot_id, KEYS.NEW_FEEDBACK, key_id);
+function sendFeedbackNotification(org_id, key_id) {
+  sendNotification(org_id, KEYS.NEW_FEEDBACK, key_id);
 }
 
-function sendOrderNotification(bot_id, key_id) {
-  sendNotification(bot_id, KEYS.NEW_ORDER, key_id);
+function sendOrderNotification(org_id, key_id) {
+  sendNotification(org_id, KEYS.NEW_ORDER, key_id);
 }
 
 module.exports = {

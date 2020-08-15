@@ -57,7 +57,7 @@ module.exports = new WizardScene(
         file: await getUrl(ctx),
         rating: ctx.scene.state.rate
       }).then(res => {
-        sendFeedbackNotification(ctx.meta.id, res[0]);
+        sendFeedbackNotification(ctx.meta.organizationId, res[0]);
         ctx.replyWithMarkdown('Спасибо за ваш отзыв!');
         ctx.scene.leave();
         return global.routes.start(ctx);

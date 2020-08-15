@@ -105,7 +105,7 @@ module.exports = new WizardScene(
 				cart: ctx.session.cart,
 				delivery_charge: 5000
 			});
-			sendOrderNotification(ctx.meta.id, orderId);
+			sendOrderNotification(ctx.meta.organizationId, orderId);
 			ctx.replyWithMarkdown(
 				`Заказ принят. Номер заказа #${orderId}. Ожидайте звонка оператора`
 			);
