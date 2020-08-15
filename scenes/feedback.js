@@ -5,7 +5,7 @@ const { match } = require('telegraf-i18n');
 const dbService = require('../services/db');
 const { findKeyByValue } = require('../common/utils');
 const { feedbackTypes } = require('../common/constants');
-
+const { sendFeedbackNotification } = require('../services/socket');
 
 const stars = {
   5: '⭐⭐⭐⭐⭐',
@@ -57,6 +57,7 @@ module.exports = new WizardScene(
         file: await getUrl(ctx),
         rating: ctx.scene.state.rate
       }).then(res => {
+        sendFeedbackNotification(ctx.meta.id, res[0]);
         ctx.replyWithMarkdown('Спасибо за ваш отзыв!');
         ctx.scene.leave();
         return global.routes.start(ctx);

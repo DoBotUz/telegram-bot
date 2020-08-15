@@ -5,6 +5,7 @@ const { match } = require('telegraf-i18n');
 const _ = require('lodash');
 const dbService = require('../services/db');
 const { createOrder } = require('../services/db/checkout');
+const { sendOrderNotification } = require('../services/socket');
 
 const payment_types = {
 	'💵 Наличные': 'CASH'
@@ -104,7 +105,7 @@ module.exports = new WizardScene(
 				cart: ctx.session.cart,
 				delivery_charge: 5000
 			});
-			
+			sendOrderNotification(ctx.meta.id, orderId);
 			ctx.replyWithMarkdown(
 				`Заказ принят. Номер заказа #${orderId}. Ожидайте звонка оператора`
 			);
