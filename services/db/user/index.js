@@ -31,7 +31,7 @@ function getUser({ botId, tg_id }) {
     .first();
 }
 
-function saveUserInfo({ bot_id, tg_id, ...info }) {
+function saveUserInfo(bot_id, tg_id, info) {
   return knex('bot_user')
     .where({ bot_id, tg_id })
     .update(info);
