@@ -1,6 +1,7 @@
 const Telegraf = require('telegraf');
 const Koa = require('koa')
 const KoaBody = require('koa-body');
+const fs = require('fs');
 const configure = require('./bot');
 const dbService = require('./services/db');
 const { webhook } = require('./config');
