@@ -8,6 +8,7 @@ const { feedbackTypes } = require('../common/constants');
 const { sendFeedbackNotification } = require('../services/socket');
 const config = require('../config');
 const { join } = require('path');
+const https = require('https');
 
 const stars = {
   5: '⭐⭐⭐⭐⭐',
