@@ -66,14 +66,14 @@ module.exports = new WizardScene(
     .hears(match('back'), ctx => {
       ctx.scene.reenter();
     })
-    .on('contact', ctx => {
+    .on('contact', async ctx => {
       if (ctx.scene.state.step === 'phone') {
         let phone = ctx.message.contact.phone_number.replace(/\+/g, '');
         await saveUserInfo(ctx.meta.id, ctx.from.id, { phone_number: phone });
         ctx.scene.reenter();
       }
     })
-    .hears(/^\+?(998)?( |\-)?\d{2}( |\-)?\d{3}( |\-)?\d{2}( |\-)?\d{2}/, ctx => {
+    .hears(/^\+?(998)?( |\-)?\d{2}( |\-)?\d{3}( |\-)?\d{2}( |\-)?\d{2}/, async ctx => {
       if (ctx.scene.state.step === 'phone') {
         let phone = ctx.message.text.replace(/\+| |\-/g, '');
         await saveUserInfo(ctx.meta.id, ctx.from.id, { phone_number: phone });
@@ -88,7 +88,7 @@ module.exports = new WizardScene(
         ctx.scene.reenter();
       }
     })
-    .on('text', ctx => {
+    .on('text', async ctx => {
       if (ctx.scene.state.step === 'name') {
         await saveUserInfo(ctx.meta.id, ctx.from.id, { bio: ctx.message.text });
         return ctx.scene.reenter()
