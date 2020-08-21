@@ -33,7 +33,7 @@ function attachBot(meta) { // meta = bot
       return dbService('bot').where({
         id: meta.id,
       }).update({
-        status: 10,
+        status: '10',
         // is_online: true
       });
     })
@@ -42,7 +42,7 @@ function attachBot(meta) { // meta = bot
       return dbService('bot').where({
         id: meta.id,
       }).update({
-        status: 11,
+        status: '11',
         // is_online: false
       });
     });
