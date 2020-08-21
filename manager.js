@@ -4,6 +4,7 @@ const KoaBody = require('koa-body');
 const configure = require('./bot');
 const dbService = require('./services/db');
 const { webhook } = require('./config');
+const socket = require('./services/socket');
 
 const DOBOT_TOKENS = [];
 const DOBOTS = {};
@@ -29,11 +30,23 @@ function attachBot(meta) { // meta = bot
   bot.telegram.setWebhook(webhook.url + webhook.path + meta.token)
     .then(res => {
       console.log('setWebhook', meta.token, res)
+      return dbService('bot').where({
+        id: meta.id,
+      }).update({
+        status: 10,
+        // is_online: true
+      });
     })
     .catch(err => {
       console.error('webhook err', meta.token, err);
+      return dbService('bot').where({
+        id: meta.id,
+      }).update({
+        status: 11,
+        // is_online: false
+      });
     });
-  DOBOTS[meta.token] = bot;
+  DOBOTS[meta.id] = bot;
   DOBOT_TOKENS.push(meta.token);
 }
 
@@ -44,5 +57,24 @@ dbService('bot').where({
     attachBot(bot);
   });
 })
+
+socket.on('botStatusChange', async data => {
+  let { id, status } = data;
+  if (status == 10) {
+    let bot = DOBOTS[id];
+    dbService('bot')
+      .where({ id: id })
+      .first()
+      .then(b => {
+        attachBot(bot);
+      })
+  } else if (status == 11) {
+    let bot = DOBOTS[id];
+    if (bot) {
+      bot.setWebhook(null);
+      delete DOBOTS[id];
+    }
+  }
+});
 
 app.listen(3000)

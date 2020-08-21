@@ -20,9 +20,9 @@ async function buildCheque(ctx) {
   return {
     text: '📥 Корзина:\n\n' + text + `\n\n*Итого:* ${total} сум`,
     keyboard: [
-      '🔄 Очистить',
-      ...products.map(prod => `❌ ${prod.ru_title}`),
-      ctx.i18n.t('back')
+      ['🔄 Очистить', '🛵 Оформить заказ'],
+      ...products.map(prod => [`❌ ${prod.ru_title}`]),
+      [ctx.i18n.t('back')]
     ]
   }
 }
@@ -51,6 +51,11 @@ module.exports = new WizardScene(
       }
       ctx.scene.leave();
       return global.routes.start(ctx);
+    })
+    .hears('🛵 Оформить заказ', ctx => {
+      ctx.scene.enter('checkout', {
+        origin: 'cart'
+      });
     })
     .hears(/^❌ .+/, async ctx => {
       let name = ctx.message.text.replace('❌ ', '');

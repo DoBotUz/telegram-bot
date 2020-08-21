@@ -20,6 +20,7 @@ module.exports = new WizardScene(
     .hears(Object.values(languages), ctx => {
       const lang_selected = findKeyByValue(languages, ctx.message.text);
       ctx.i18n.locale(lang_selected);
+      ctx.session.__language_code = lang;
       ctx.replyWithMarkdown(
         ctx.i18n.t('enter-name'),
         Markup.keyboard().removeKeyboard().extra()

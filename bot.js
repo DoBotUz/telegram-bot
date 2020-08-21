@@ -2,6 +2,8 @@ require('./routes');
 const session = require('./middlewares/session');
 const webhookPing = require('./middlewares/webhookPing');
 const setUserInfo = require('./middlewares/setUserInfo');
+const socket = require('./services/socket');
+const knex = require('./services/db');
 const
 	Telegraf = require('telegraf'),
 	I18n = require('telegraf-i18n'),
@@ -10,7 +12,7 @@ const
 	path = require('path'),
 	scenes = require('./scenes'),
 	config = require('./config.js'),
-	{ match } = I18n;
+  { match } = I18n;  
 
 const i18n = new I18n({
   useSession: true,
@@ -58,6 +60,7 @@ function configure(bot) {
   bot.on('text', ctx => ctx.reply(ctx.i18n.t('tap-on-buttons')));
 
   bot.start((ctx) => global.routes.start(ctx));
+
 }
 
 module.exports = configure;
