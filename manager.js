@@ -75,26 +75,22 @@ socket.on('botStatusChange', async data => {
 
 socket.on('newBotNotification', async data => {
   let botNotificationId = data;
-  let botNotification = await dbService('bot_notification')
-    .where({
-      id: botNotificationId
-    })
-    .leftJoin('bot', 'bot.id', 'bot_notification.botId')
-    .leftJoin('mailing_template', 'mailing_template.id', 'bot_notification.mailingTemplateId')
-    .first();
-  console.log(botNotification);
+  let botNotification = await dbService('bot_notification').where({ id: botNotificationId }).first();
+  let bot = await dbService('bot').where({ id: botNotification.botId }).first();
+  let mailingTemplate = await dbService('mailing_template').where({ id: botNotification.mailingTemplateId }).first();
+  console.log(botNotification, bot, mailingTemplate);
   let botUsers = await knex('bot_users')
     .where({
-      botId: botNotification.bot.id
+      botId: bot.id
     });
   console.log(botUsers);
-  let bot = DOBOTS[botNotification.bot.token];
-  if (!bot) {
-    attachBot(botNotification.bot);
-    bot = DOBOTS[botNotification.bot.token];
+  let dobot = DOBOTS[bot.token];
+  if (!dobot) {
+    attachBot(bot);
+    dobot = DOBOTS[bot.token];
   }
   botUsers.forEach(user => {
-    bot.telegram.sendMessage(user.tg_id, botNotification.mailing_template.ru_description);
+    dobot.telegram.sendMessage(user.tg_id, mailingTemplate.ru_description);
   });
 })
 
