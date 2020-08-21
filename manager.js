@@ -46,7 +46,7 @@ function attachBot(meta) { // meta = bot
         // is_online: false
       });
     });
-  DOBOTS[meta.id] = bot;
+  DOBOTS[meta.token] = bot;
   DOBOT_TOKENS.push(meta.token);
 }
 
@@ -61,18 +61,16 @@ dbService('bot').where({
 socket.on('botStatusChange', async data => {
   console.log(data);
   let { id, status } = data;
+  let bot = await dbService('bot')
+    .where({ id: id })
+    .first();
   if (status == 10) {
-    dbService('bot')
-      .where({ id: id })
-      .first()
-      .then(bot => {
-        attachBot(bot);
-      });
+    attachBot(bot);
   } else if (status == 11) {
-    let bot = DOBOTS[id];
-    if (bot) {
-      bot.setWebhook(null);
-      delete DOBOTS[id];
+    let dobot = DOBOTS[bot.token];
+    if (dobot) {
+      dobot.setWebhook(null);
+      delete DOBOTS[bot.token];
     }
   }
 });
