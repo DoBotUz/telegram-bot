@@ -22,15 +22,19 @@ module.exports = new WizardScene(
   'feedback',
   async ctx => {
     ctx.replyWithMarkdown(
-      'Оцените нашу работу по 5-бальной шкале.',
+      'Оцените нашу работу по 5-бальной шкале',
       Markup.keyboard([
         ...Object.values(stars).reverse(),
+        'Обратиться к менеджеру',
         ctx.i18n.t('back')
       ], { columns: 1 }).resize().extra()
     );
     ctx.wizard.next();
   },
   new Composer()
+    .hears('Обратиться к менеджеру', ctx => {
+      ctx.scene.enter('chat');
+    })
     .hears(Object.values(stars), ctx => {
       ctx.scene.state.rate = findKeyByValue(stars, ctx.message.text);
       ctx.replyWithMarkdown(

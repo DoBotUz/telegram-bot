@@ -5,4 +5,5 @@ module.exports = [
   require('./cart'),
   require('./checkout'),
   require('./feedback'),
+  require('./chat')
 ];
