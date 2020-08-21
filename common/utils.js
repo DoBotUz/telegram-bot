@@ -24,10 +24,18 @@ function findKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
 }
 
+function getSessionKey(ctx) {
+  if (!ctx.from || !ctx.chat) {
+    return
+  }
+  return `${ctx.chat.id}:${ctx.from.id}`
+}
+
 module.exports = {
   rangeKeyboard,
   isCartEmpty,
   formatMoney,
   strikeThrough,
   findKeyByValue,
+  getSessionKey
 }

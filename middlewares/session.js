@@ -1,15 +1,11 @@
 const dbService = require('../services/db');
+const { getSessionKey } = require('../common/utils');
 
 class MySQLSession {
   constructor(options) {
     this.options = Object.assign({
       property: 'session',
-      getSessionKey: (ctx) => {
-        if (!ctx.from || !ctx.chat) {
-          return
-        }
-        return `${ctx.chat.id}:${ctx.from.id}`
-      },
+      getSessionKey: getSessionKey,
       store: {}
     }, options);
     this.sessions = {};

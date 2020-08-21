@@ -3,7 +3,9 @@ const WizardScene = require('telegraf/scenes/wizard');
 const Composer = require('telegraf/composer');
 const { match } = require('telegraf-i18n');
 const { languages } = require('../common/constants');
-const { findKeyByValue } = require('../common/utils');
+const { findKeyByValue, getSessionKey } = require('../common/utils');
+const { saveSession } = require('../middlewares/session');
+const { saveUserInfo } = require('../services/db/user');
 
 module.exports = new WizardScene(
   'settings',
@@ -66,25 +68,29 @@ module.exports = new WizardScene(
     })
     .on('contact', ctx => {
       if (ctx.scene.state.step === 'phone') {
-        // ctx.session.client.phone = ctx.message.contact.phone_number.replace(/\+/g, '');
+        let phone = ctx.message.contact.phone_number.replace(/\+/g, '');
+        await saveUserInfo(ctx.meta.id, ctx.from.id, { phone_number: phone });
         ctx.scene.reenter();
       }
     })
     .hears(/^\+?(998)?( |\-)?\d{2}( |\-)?\d{3}( |\-)?\d{2}( |\-)?\d{2}/, ctx => {
       if (ctx.scene.state.step === 'phone') {
-        // ctx.session.client.phone = ctx.message.text.replace(/\+| |\-/g, '');
+        let phone = ctx.message.text.replace(/\+| |\-/g, '');
+        await saveUserInfo(ctx.meta.id, ctx.from.id, { phone_number: phone });
         ctx.scene.reenter();
       }
     })
-    .hears(Object.values(languages), ctx => {
+    .hears(Object.values(languages), async ctx => {
       if (ctx.scene.state.step === 'lang') {
         ctx.i18n.locale(findKeyByValue(languages, ctx.message.text));
+        await saveSession(ctx.meta.id, getSessionKey(ctx), ctx.session);
+        await saveUserInfo(ctx.meta.id, ctx.from.id, { language: ctx.i18n.locale() });
         ctx.scene.reenter();
       }
     })
     .on('text', ctx => {
       if (ctx.scene.state.step === 'name') {
-        // ctx.session.client.name = ctx.message.text;
+        await saveUserInfo(ctx.meta.id, ctx.from.id, { bio: ctx.message.text });
         return ctx.scene.reenter()
       } else if (ctx.scene.state.step === 'phone') {
         return ctx.replyWithMarkdown(
