@@ -4,7 +4,7 @@ const KoaBody = require('koa-body');
 const configure = require('./bot');
 const dbService = require('./services/db');
 const { webhook } = require('./config');
-const socket = require('./services/socket');
+const { socket } = require('./services/socket');
 
 const DOBOT_TOKENS = [];
 const DOBOTS = {};
@@ -59,15 +59,15 @@ dbService('bot').where({
 })
 
 socket.on('botStatusChange', async data => {
+  console.log(data);
   let { id, status } = data;
   if (status == 10) {
-    let bot = DOBOTS[id];
     dbService('bot')
       .where({ id: id })
       .first()
-      .then(b => {
+      .then(bot => {
         attachBot(bot);
-      })
+      });
   } else if (status == 11) {
     let bot = DOBOTS[id];
     if (bot) {
