@@ -28,13 +28,12 @@ function signUp({
 function getUser({ botId, tg_id }) {
   return knex('bot_user')
     .where({ botId, tg_id })
-    .first();
+    .first()
 }
 
-function saveUserInfo(bot_id, tg_id, info) {
-  return knex('bot_user')
-    .where({ bot_id, tg_id })
-    .update(info);
+function saveUserInfo(botId, tg_id, info) {
+  return getUser({botId, tg_id}).update(info)
+  
 }
 
 module.exports = {
