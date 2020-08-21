@@ -90,16 +90,26 @@ socket.on('newBotNotification', async data => {
     dobot = DOBOTS[bot.token];
   }
   let photo = null;
+  let sent_count = 0;
   if (mailingTemplate.thumbnail)
     photo = fs.readFileSync(config.mediaPath + '/mailing-templates/' + mailingTemplate.thumbnail);
   botUsers.forEach(user => {
+    sent_count++;
     if (photo)
       dobot.telegram.sendPhoto(user.tg_id,
         { source: photo },
         { caption: mailingTemplate.ru_description }
-      );
+      )
     else 
       dobot.telegram.sendMessage(user.tg_id, mailingTemplate.ru_description)
+    if (sent_count >= botUsers.length) {
+      dbService('mailing_template')
+        .where({ id: mailingTemplate.id })
+        .update({ status: 11 });
+      dbService('bot_notification')
+        .where({ id: botNotificationId })
+        .update({ status: 10 });
+    }
   });
 })
 
