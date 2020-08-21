@@ -6,6 +6,8 @@ const dbService = require('../services/db');
 const { findKeyByValue } = require('../common/utils');
 const { feedbackTypes } = require('../common/constants');
 const { sendFeedbackNotification } = require('../services/socket');
+const config = require('../config');
+const { join } = require('path');
 
 const stars = {
   5: '⭐⭐⭐⭐⭐',
@@ -48,13 +50,14 @@ module.exports = new WizardScene(
     })
     .on(['text', 'photo', 'video', 'audio', 'voice'], async ctx => {
       let comment = ctx.message.text ? ctx.message.text : ctx.message.caption;
+      let path = await getUrl(ctx).then(download);
       dbService('feedback').insert({
         type: feedbackTypes[getMessageType(ctx.message)],
         botUserId: ctx.user.id,
         botId: ctx.meta.id,
         organizationId: ctx.meta.organizationId,
         comment: comment || '',
-        file: await getUrl(ctx),
+        file: path,
         rating: ctx.scene.state.rate
       }).then(res => {
         sendFeedbackNotification(ctx.meta.organizationId, res[0]);
@@ -130,4 +133,24 @@ function getSendMethod(fileType) {
     default:
       throw Exception('unknown type');
   }
+}
+
+const urlRegExp = /\w+\/\w+.\w+$/
+async function download(url) {
+  let path = url.match(urlRegExp)
+  if(!path) {
+    throw Error('wrong url')
+  }
+  path = path[0] ? path[0] : path
+  const dir = join(config.mediaPath, 'feedbacks', path.match(/^\w+/)[0])
+  try {
+    fs.mkdirSync(dir);
+  } catch { }
+  return new Promise((resolve, reject) => {
+    let file = fs.createWriteStream(join(config.mediaPath, 'feedbacks', path))
+    https.get(url, response => {
+      response.pipe(file);
+      response.on('end', _ => resolve(path));
+    })
+  })
 }
