@@ -82,9 +82,11 @@ module.exports = new WizardScene(
     })
     .hears(Object.values(languages), async ctx => {
       if (ctx.scene.state.step === 'lang') {
-        ctx.i18n.locale(findKeyByValue(languages, ctx.message.text));
+        let lang = findKeyByValue(languages, ctx.message.text);
+        ctx.i18n.locale(lang);
+        ctx.session.__language_code = lang;
         await saveSession(ctx.meta.id, getSessionKey(ctx), ctx.session);
-        await saveUserInfo(ctx.meta.id, ctx.from.id, { language: ctx.i18n.locale() });
+        await saveUserInfo(ctx.meta.id, ctx.from.id, { language: lang });
         ctx.scene.reenter();
       }
     })
