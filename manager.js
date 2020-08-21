@@ -69,8 +69,8 @@ socket.on('botStatusChange', async data => {
   } else if (status == 11) {
     let dobot = DOBOTS[bot.token];
     if (dobot) {
-      dobot.setWebhook(null);
-      delete DOBOTS[bot.token];
+      dobot.telegram.setWebhook(null);
+      DOBOTS[bot.token] = null;
     }
   }
 });
