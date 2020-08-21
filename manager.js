@@ -79,7 +79,7 @@ socket.on('newBotNotification', async data => {
   let bot = await dbService('bot').where({ id: botNotification.botId }).first();
   let mailingTemplate = await dbService('mailing_template').where({ id: botNotification.mailingTemplateId }).first();
   console.log(botNotification, bot, mailingTemplate);
-  let botUsers = await knex('bot_users')
+  let botUsers = await knex('bot_user')
     .where({
       botId: bot.id
     });
