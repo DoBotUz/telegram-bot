@@ -6,6 +6,7 @@ const dbService = require('./services/db');
 const { webhook } = require('./config');
 const { socket } = require('./services/socket');
 const knex = require('./services/db');
+const config = require('./config');
 
 const DOBOTS = {};
 
@@ -78,19 +79,25 @@ socket.on('newBotNotification', async data => {
   let botNotification = await dbService('bot_notification').where({ id: botNotificationId }).first();
   let bot = await dbService('bot').where({ id: botNotification.botId }).first();
   let mailingTemplate = await dbService('mailing_template').where({ id: botNotification.mailingTemplateId }).first();
-  console.log(botNotification, bot, mailingTemplate);
   let botUsers = await knex('bot_user')
     .where({
       botId: bot.id
     });
-  console.log(botUsers);
   let dobot = DOBOTS[bot.token];
   if (!dobot) {
     attachBot(bot);
     dobot = DOBOTS[bot.token];
   }
+  let photo = null;
+  if (mailingTemplate.thumbnail)
+    photo = fs.readFileSync(config.mediaPath + '/mailing-templates/' + mailingTemplate.thumbnail);
   botUsers.forEach(user => {
-    dobot.telegram.sendMessage(user.tg_id, mailingTemplate.ru_description);
+    if (photo)
+      bot.telegram.sendPhoto(user.tg_id, photo, {
+        caption: mailingTemplate.ru_description
+      });
+    else 
+      bot.telegram.sendMessage(user.tg_id, mailingTemplate.ru_description)
   });
 })
 
