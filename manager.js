@@ -5,15 +5,15 @@ const configure = require('./bot');
 const dbService = require('./services/db');
 const { webhook } = require('./config');
 const { socket } = require('./services/socket');
+const knex = require('./services/db');
 
-const DOBOT_TOKENS = [];
 const DOBOTS = {};
 
 const app = new Koa();
 app.use(KoaBody());
 app.use(async (ctx, next) => {
   let token = ctx.url.replace(webhook.path, '');
-  if (ctx.method === 'POST' && DOBOT_TOKENS.some(t => t === token)) {
+  if (ctx.method === 'POST' && DOBOTS[token]) {
     await DOBOTS[token].handleUpdate(ctx.request.body, ctx.response);
   }
   ctx.status = 200;
@@ -47,7 +47,6 @@ function attachBot(meta) { // meta = bot
       });
     });
   DOBOTS[meta.token] = bot;
-  DOBOT_TOKENS.push(meta.token);
 }
 
 dbService('bot').where({
@@ -59,7 +58,6 @@ dbService('bot').where({
 })
 
 socket.on('botStatusChange', async data => {
-  console.log(data);
   let { id, status } = data;
   let bot = await dbService('bot')
     .where({ id: id })
@@ -74,5 +72,30 @@ socket.on('botStatusChange', async data => {
     }
   }
 });
+
+socket.on('newBotNotification', async data => {
+  let botNotificationId = data;
+  let botNotification = await dbService('bot_notification')
+    .where({
+      id: botNotificationId
+    })
+    .leftJoin('bot', 'bot.id', 'bot_notification.botId')
+    .leftJoin('mailing_template', 'mailing_template.id', 'bot_notification.mailingTemplateId')
+    .first();
+  console.log(botNotification);
+  let botUsers = await knex('bot_users')
+    .where({
+      botId: botNotification.bot.id
+    });
+  console.log(botUsers);
+  let bot = DOBOTS[botNotification.bot.token];
+  if (!bot) {
+    attachBot(botNotification.bot);
+    bot = DOBOTS[botNotification.bot.token];
+  }
+  botUsers.forEach(user => {
+    bot.telegram.sendMessage(user.tg_id, botNotification.mailing_template.ru_description);
+  });
+})
 
 app.listen(3000)
