@@ -94,11 +94,12 @@ socket.on('newBotNotification', async data => {
     photo = fs.readFileSync(config.mediaPath + '/mailing-templates/' + mailingTemplate.thumbnail);
   botUsers.forEach(user => {
     if (photo)
-      bot.telegram.sendPhoto(user.tg_id, photo, {
-        caption: mailingTemplate.ru_description
-      });
+      dobot.telegram.sendPhoto(user.tg_id,
+        { source: photo },
+        { caption: mailingTemplate.ru_description }
+      );
     else 
-      bot.telegram.sendMessage(user.tg_id, mailingTemplate.ru_description)
+      dobot.telegram.sendMessage(user.tg_id, mailingTemplate.ru_description)
   });
 })
 
