@@ -5,6 +5,12 @@ const { match } = require('telegraf-i18n');
 const dbService = require('../services/db');
 const { socket } = require('../services/socket');
 
+const TYPES = {
+  'text': 0,
+  'photo': 1,
+  'location': 2,
+};
+
 module.exports = new WizardScene(
   'chat',
   async ctx => {
@@ -22,25 +28,25 @@ module.exports = new WizardScene(
       ctx.scene.enter('feedback');
     })
     .on('text', async (ctx, next) => {
-      socket.emit('chat', {
+      socket.emit('newMessage', {
         from: ctx.user.id,
-        type: 'text',
+        type: TYPES['text'],
         text: ctx.message.text,
         organizationId: ctx.meta.organizationId
       })
     })
     .on('photo', async (ctx, next) => {
       let path = ''; // TODO download photo
-      socket.emit('chat', {
+      socket.emit('newMessage', {
         from: ctx.user.id,
-        type: 'photo',
+        type: TYPES['photo'],
         text: path
       })
     })
     .on('location', async (ctx, next) => {
-      socket.emit('question', {
+      socket.emit('newMessage', {
         from: ctx.user.id,
-        type: 'location',
+        type: TYPES['location'],
         text: JSON.stringify({
           lat: ctx.message.location.latitude,
           lng: ctx.message.location.longitude
