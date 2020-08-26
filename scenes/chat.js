@@ -3,7 +3,7 @@ const WizardScene = require('telegraf/scenes/wizard');
 const Composer = require('telegraf/composer');
 const { match } = require('telegraf-i18n');
 const dbService = require('../services/db');
-const socket = require('../services/socket');
+const { socket } = require('../services/socket');
 
 module.exports = new WizardScene(
   'chat',
@@ -25,7 +25,8 @@ module.exports = new WizardScene(
       socket.emit('chat', {
         from: ctx.user.id,
         type: 'text',
-        text: ctx.message.text
+        text: ctx.message.text,
+        organizationId: ctx.meta.organizationId
       })
     })
     .on('photo', async (ctx, next) => {
