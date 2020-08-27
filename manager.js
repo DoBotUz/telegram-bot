@@ -111,6 +111,26 @@ socket.on('newBotNotification', async data => {
         .update({ status: 10 });
     }
   });
-})
+});
+
+socket.on('newMessage', async data => {
+  const message = JSON.parse(data);
+  if (!message.sent_by_operator) {
+    return;
+  }
+  const bot = await knex('bot').where({
+    organizationId: message.organizationId
+  }).first();
+  const user = await knex('bot_user').where({
+    id: message.recipient
+  }).first();
+  if (!user) return;
+  let dobot = DOBOTS[bot.token];
+  if (!dobot) {
+    attachBot(bot);
+    dobot = DOBOTS[bot.token];
+  }
+  dobot.telegram.sendMessage(user.tg_id, message.text);
+});
 
 app.listen(3000)
