@@ -29,7 +29,7 @@ module.exports = new WizardScene(
     })
     .on('text', async (ctx, next) => {
       socket.emit('newMessage', {
-        from: ctx.user.id,
+        author: ctx.user.id,
         type: TYPES['text'],
         text: ctx.message.text,
         organizationId: ctx.meta.organizationId
@@ -38,14 +38,14 @@ module.exports = new WizardScene(
     .on('photo', async (ctx, next) => {
       let path = ''; // TODO download photo
       socket.emit('newMessage', {
-        from: ctx.user.id,
+        author: ctx.user.id,
         type: TYPES['photo'],
         text: path
       })
     })
     .on('location', async (ctx, next) => {
       socket.emit('newMessage', {
-        from: ctx.user.id,
+        author: ctx.user.id,
         type: TYPES['location'],
         text: JSON.stringify({
           lat: ctx.message.location.latitude,
