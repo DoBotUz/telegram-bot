@@ -15,7 +15,7 @@ async function buildCheque(ctx) {
 	const products = await dbService('item')
 			.whereIn('id', Object.keys(ctx.session.cart).filter(id => ctx.session.cart[id]));
 	const text = products.map(product => (
-			`*${product.ru_title}*\n` +
+			`*${product[`${ctx.i18n.locale()}_title`]}*\n` +
 			`${ctx.session.cart[product.id]} x ${product.price} = ${ctx.session.cart[product.id] * product.price} сум`
 	)).join('\n\n');
 	const total = products.reduce((p, c) => {

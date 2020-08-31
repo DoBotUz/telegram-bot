@@ -10,7 +10,7 @@ async function buildCheque(ctx) {
   const products = await dbService('item')
     .whereIn('id', Object.keys(ctx.session.cart).filter(id => ctx.session.cart[id]));
   const text = products.map(product => (
-    `*${product.ru_title}*\n` +
+    `*${product[`${ctx.i18n.locale()}_title`]}*\n` +
     `${ctx.session.cart[product.id]} x ${product.price} = ${ctx.session.cart[product.id] * product.price} сум`
   )).join('\n\n');
   const total = products.reduce((p, c) => {
@@ -21,7 +21,7 @@ async function buildCheque(ctx) {
     text: '📥 Корзина:\n\n' + text + `\n\n*Итого:* ${total} сум`,
     keyboard: [
       ['🔄 Очистить', '🛵 Оформить заказ'],
-      ...products.map(prod => [`❌ ${prod.ru_title}`]),
+      ...products.map(prod => [`❌ ${prod[`${ctx.i18n.locale()}_title`]}`]),
       [ctx.i18n.t('back')]
     ]
   }
@@ -59,7 +59,7 @@ module.exports = new WizardScene(
     })
     .hears(/^❌ .+/, async ctx => {
       let name = ctx.message.text.replace('❌ ', '');
-      let product = await dbService('item').where({ ru_title: name }).first();
+      let product = await dbService('item').where({ [`${ctx.i18n.locale()}_title`]: name }).first();
       delete ctx.session.cart[product.id];
       if (isCartEmpty(ctx.session.cart)) {
         await ctx.replyWithMarkdown('Корзина пуста');

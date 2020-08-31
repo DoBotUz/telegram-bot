@@ -9,8 +9,8 @@ const _ = require('lodash');
 const config = require('../config.js');
 const fs = require('fs');
 
-function buildProductDescription(product) {
-  return `${product.ru_title}\n\n${product.ru_description}\n\nЦена: ${formatMoney(product.price)} сум`
+function buildProductDescription(ctx, product) {
+  return `${product[`${ctx.i18n.locale()}_title`]}\n\n${product[`${ctx.i18n.locale()}_description`]}\n\nЦена: ${formatMoney(product.price)} сум`
 }
 
 module.exports = new WizardScene(
@@ -46,7 +46,7 @@ module.exports = new WizardScene(
       if (ctx.scene.state.product) {
         return dbService('item')
           .where({
-            ru_title: ctx.message.text,
+            [`${ctx.i18n.locale()}_title`]: ctx.message.text,
             categoryId: ctx.scene.state.parent_category
           })
           .first()
@@ -56,7 +56,7 @@ module.exports = new WizardScene(
               ctx.replyWithPhoto({
                 source: fs.readFileSync(config.mediaPath + '/items/' + product.thumbnail)
               }, Extra
-                  .caption(buildProductDescription(product))
+                  .caption(buildProductDescription(ctx, product))
                   .markdown()
                   .markup(Markup.keyboard([
                     ...rangeKeyboard(1, 9),
@@ -65,7 +65,7 @@ module.exports = new WizardScene(
               )
             } else {
               ctx.replyWithMarkdown(
-                buildProductDescription(product),
+                buildProductDescription(ctx, product),
                 Markup.keyboard([
                   ...rangeKeyboard(1, 9),
                   [ctx.i18n.t('back')]
@@ -77,7 +77,7 @@ module.exports = new WizardScene(
       }
 
       dbService('category').where({
-        ru_title: ctx.message.text,
+        [`${ctx.i18n.locale()}_title`]: ctx.message.text,
         parentCategoryId: ctx.scene.state.parent_category
       })
         .first()
@@ -142,7 +142,7 @@ function sendMsgWithCategories(ctx, categories) {
     'Выберите категорию',
     Markup.keyboard([
       ['🧺 Корзина', '🛵 Оформить заказ'],
-      ..._.chunk(categories.map(cat => cat.ru_title), 2),
+      ..._.chunk(categories.map(cat => cat[`${ctx.i18n.locale()}_title`]), 2),
       [ctx.i18n.t('back')]
     ]).resize().extra()
   );
@@ -153,7 +153,7 @@ function sendMsgWithProducts(ctx, products) {
     'Выберите блюдо',
     Markup.keyboard([
       ['🧺 Корзина', '🛵 Оформить заказ'],
-      ..._.chunk(products.map(prod => prod.ru_title), 2),
+      ..._.chunk(products.map(prod => prod[`${ctx.i18n.locale()}_title`]), 2),
       [ctx.i18n.t('back')]
     ]).resize().extra()
   )

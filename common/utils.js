@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const moment = require('moment');
 
 function rangeKeyboard(min, max, size = 3) {
   let arr = new Array(max - min + 1).fill(0).map((el, i) => (i + min).toString());
@@ -31,11 +32,23 @@ function getSessionKey(ctx) {
   return `${ctx.chat.id}:${ctx.from.id}`
 }
 
+function isBetween(now, from, until) {
+  let format = 'HH:mm'
+  let currentDate = moment(now).format(format)
+  from = moment(from, format)
+  until = moment(until, format)
+  if(until.isBefore(from)) {
+    return !moment(currentDate, format).isBetween(until, from)
+  }
+  return moment(currentDate, format).isBetween(from, until)
+}
+
 module.exports = {
   rangeKeyboard,
   isCartEmpty,
   formatMoney,
   strikeThrough,
   findKeyByValue,
-  getSessionKey
+  getSessionKey,
+  isBetween,
 }
