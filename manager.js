@@ -134,3 +134,7 @@ socket.on('newMessage', async data => {
 });
 
 app.listen(3000)
+
+process.on('unhandledRejection', function(reason, p){
+  console.log("Possibly Unhandled Exception at: Promise ", p, " reason: ", reason);
+});

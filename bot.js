@@ -55,12 +55,15 @@ function configure(bot) {
   bot.hears('✍️ Оставить отзыв', ctx => {
     ctx.scene.enter('feedback');
   });
-  //bot.hears('ℹ️ Инфо', global.routes.info);
+  bot.hears('ℹ️ Инфо', global.routes.info);
 
   bot.on('text', ctx => ctx.reply(ctx.i18n.t('tap-on-buttons')));
 
   bot.start((ctx) => global.routes.start(ctx));
 
+  bot.catch(err => {
+    console.log("(Bot) Unhandled Exception:", err);
+  })
 }
 
 module.exports = configure;
