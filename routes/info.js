@@ -1,4 +1,5 @@
 const Markup = require('telegraf/markup');
+const Extra = require('telegraf/extra');
 const dbService = require('../services/db');
 const fs = require('fs');
 const config = require('../config.js');
